@@ -11,5 +11,6 @@ __attribute__((visibility("default"))) PyObject* PyInit__C(void);
 
 PyMODINIT_FUNC PyInit__C(void)
 {
+  // This is called the first time import torch._C is called
   return initModule();
 }

@@ -496,6 +496,8 @@ struct C10_API TensorImpl;
  *    tensor is fully initialized in all fields.  Please do not write new code
  *    that depends on these uninitialized states.
  */
+// This is the tensorImpl in C++ land that hosts a storage to the underlying data
+// and the metadata for autograd?
 struct C10_API TensorImpl : public c10::intrusive_ptr_target {
   TensorImpl() = delete;
   ~TensorImpl() override;

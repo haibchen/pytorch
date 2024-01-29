@@ -1513,6 +1513,7 @@ PyObject* initModule() {
 #endif
 #endif
 
+  // This declares CPython module corresponding to torch._C
   static struct PyModuleDef torchmodule = {
       PyModuleDef_HEAD_INIT, "torch._C", nullptr, -1, methods.data()};
   module = PyModule_Create(&torchmodule);

@@ -23,6 +23,7 @@ namespace c10 {
 // nullptr DataPtrs can still have a nontrivial device; this allows
 // us to treat zero-size allocations uniformly with non-zero allocations.
 //
+// Data pointer to some memory with a specific device
 class C10_API DataPtr {
  private:
   c10::detail::UniqueVoidPtr ptr_;

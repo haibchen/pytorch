@@ -1009,10 +1009,11 @@ def configure_extension_build():
     if not cmake_cache_vars["BUILD_FUNCTORCH"]:
         excludes.extend(["functorch", "functorch.*"])
     packages = find_packages(exclude=excludes)
+    # Build the torch CPython module written in C/C++
     C = Extension(
-        "torch._C",
+        "torch._C", # This is the module being imported when `import torch` is called
         libraries=main_libraries,
-        sources=main_sources,
+        sources=main_sources, # torch/csrc/stub.c
         language="c",
         extra_compile_args=main_compile_args + extra_compile_args,
         include_dirs=[],

@@ -1019,6 +1019,7 @@ static PyTypeObject THPVariableFunctions = {
     nullptr /* tp_new */
 };
 
+// add torch functions to the torch._C module
 void initTorchFunctions(PyObject* module) {
   static std::vector<PyMethodDef> torch_functions;
   gatherTorchFunctions(torch_functions);

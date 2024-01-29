@@ -14,10 +14,11 @@
 namespace py = pybind11;
 
 // Python object that backs torch.autograd.Variable
+// This is the
 struct THPVariable {
   PyObject_HEAD;
   // Payload
-  c10::MaybeOwned<at::Tensor> cdata;
+  c10::MaybeOwned<at::Tensor> cdata; // MaybeOwned is added in https://github.com/pytorch/pytorch/pull/53317
   // Hooks to be run on backwards pass (corresponds to Python attr
   // '_backwards_hooks', set by 'register_hook')
   PyObject* backward_hooks = nullptr;

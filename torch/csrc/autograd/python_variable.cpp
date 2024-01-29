@@ -1654,6 +1654,7 @@ static PyMappingMethods THPVariable_as_mapping = {
 };
 
 // NOLINTNEXTLINE(modernize-avoid-c-arrays,cppcoreguidelines-avoid-c-arrays,cppcoreguidelines-avoid-non-const-global-variables)
+// additional functions that are exposed to torch._C module
 static PyMethodDef extra_methods[] = {
     {"as_subclass",
      castPyCFunctionWithKeywords(THPVariable_as_subclass),
@@ -1682,6 +1683,7 @@ struct THPVariableMeta {
 
 int THPVariableMetaType_init(PyObject* cls, PyObject* args, PyObject* kwargs);
 
+// This is the metaprograming for THPVariable, which is the CPython binding for tensor class in Python
 PyTypeObject THPVariableMetaType = {
     PyVarObject_HEAD_INIT(
         DEFERRED_ADDRESS(&PyType_Type),
@@ -1725,11 +1727,12 @@ PyTypeObject THPVariableMetaType = {
     nullptr, /* tp_new */
 };
 
+// This is the CPython binding for tensor class in Python
 PyTypeObject THPVariableType = {
     PyVarObject_HEAD_INIT(
         &THPVariableMetaType,
         0) "torch._C.TensorBase", /* tp_name */
-    sizeof(THPVariable), /* tp_basicsize */
+    sizeof(THPVariable), /* tp_basicsize */ // THPVariable is defined in python_variable.h
     0, /* tp_itemsize */
     // This is unspecified, because it is illegal to create a THPVariableType
     // directly.  Subclasses will have their tp_dealloc set appropriately
@@ -1754,15 +1757,15 @@ PyTypeObject THPVariableType = {
         Py_TPFLAGS_HAVE_GC, /* tp_flags */
     nullptr, /* tp_doc */
     // Also set by metaclass
-    (traverseproc)THPFunction_traverse, /* tp_traverse */
-    (inquiry)THPVariable_clear, /* tp_clear */
+    (traverseproc)THPFunction_traverse, /* tp_traverse */ // used by the garbage collector to detect reference cycles.
+    (inquiry)THPVariable_clear, /* tp_clear */ // used to break reference cycles in cyclic garbage detected by the garbage collector.
     nullptr, /* tp_richcompare */
     0, /* tp_weaklistoffset */
     nullptr, /* tp_iter */
     nullptr, /* tp_iternext */
     nullptr, /* tp_methods */
     nullptr, /* tp_members */
-    THPVariable_properties, /* tp_getset */
+    THPVariable_properties, /* tp_getset */  // This defines the properties bound to the python tensor class
     nullptr, /* tp_base */
     nullptr, /* tp_dict */
     nullptr, /* tp_descr_get */
@@ -1979,7 +1982,7 @@ static PyObject* THPVariable_NewWithVar(
     return THPVariable_Wrap(std::move(_var));
   }
 
-  PyObject* obj = type->tp_alloc(type, 0);
+  PyObject* obj = type->tp_alloc(type, 0);   // This creates an instance of THPVariable
   if (obj) {
     auto v = (THPVariable*)obj;
     // TODO: named constructor to avoid default initialization
@@ -2228,10 +2231,12 @@ bool THPVariable_initModule(PyObject* module) {
   static std::vector<PyMethodDef> methods;
   THPUtils_addPyMethodDefs(methods, torch::autograd::variable_methods);
   THPUtils_addPyMethodDefs(methods, extra_methods);
+  // Add method definitions to THPVariable
   THPVariableType.tp_methods = methods.data();
   if (PyType_Ready(&THPVariableType) < 0)
     return false;
   Py_INCREF(&THPVariableType);
+  // This exposes TensorBase and _TensorBase in the torch._C module
   PyModule_AddObject(module, "TensorBase", (PyObject*)&THPVariableType);
   PyModule_AddObject(module, "_TensorBase", (PyObject*)&THPVariableType);
   torch::autograd::initTorchFunctions(module);

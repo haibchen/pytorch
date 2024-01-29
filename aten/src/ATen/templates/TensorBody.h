@@ -89,6 +89,7 @@ using Stream = c10::Stream;
 //
 // Note that Tensor can also be NULL, i.e. it is not associated with any underlying TensorImpl, and
 // special care must be taken to handle this.
+// This is at:Tensor, a pointer type that follows python semantics, in C++ is defined
 class TORCH_API Tensor: public TensorBase {
  protected:
   // Create a Tensor with a +0 reference count. Special care must be

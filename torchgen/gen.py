@@ -99,6 +99,8 @@ from torchgen.yaml_utils import YamlDumper, YamlLoader
 
 T = TypeVar("T")
 
+
+# PyTorch code generator that is responsible for parsing native_functions.yaml and then generating
 # Welcome to the ATen code generator v2!  The ATen code generator is
 # responsible for parsing native_functions.yaml and then generating
 # various generated files (e.g., TypeDefault.cpp) based on the operators

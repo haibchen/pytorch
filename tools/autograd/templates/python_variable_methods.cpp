@@ -1195,6 +1195,7 @@ static PyObject* THPVariable_set_(
 // XXX: ops that are bound here are not exposed to the C++ api nor the JIT.
 // Any new ops added here should be accompanied with a comment why they are not
 // being registered through native_functions.yaml, and be tagged cpp / JIT
+// tensor functions/ops that are not registered through native_functions.yaml
 PyMethodDef variable_methods[] = {
   // These magic methods are all implemented on python object to wrap NotImplementedError
   {"__add__", castPyCFunctionWithKeywords(TypeError_to_NotImplemented_<THPVariable_add>), METH_VARARGS | METH_KEYWORDS, NULL},

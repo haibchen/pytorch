@@ -53,7 +53,7 @@ inline bool variable_excluded_from_dispatch() {
 
 }
 
-// NOTE: [Tensor vs. TensorBase]
+// Tensor vs TensorBase NOTE: [Tensor vs. TensorBase]
 //
 // Tensor, being the central data structure in PyTorch, gets used and
 // it's header included almost everywhere. Unfortunately this means
@@ -62,10 +62,10 @@ inline bool variable_excluded_from_dispatch() {
 // to recompile all of ATen and it's dependencies.
 //
 // TensorBase aims to break up these header dependencies, and improve
-// incremental build times for all PyTorch developers. TensorBase
+// incremental build times for all PyTorch developers. *TensorBase
 // represents a reference counted handle to TensorImpl, exactly the
 // same as Tensor. However, TensorBase doesn't have code generated
-// methods in it's API and thus no dependence on native_functions.yaml.
+// methods in it's API and thus no dependence on native_functions.yaml.*
 //
 // Usage tips
 // ----------
@@ -898,6 +898,7 @@ public:
 
 protected:
   void enforce_invariants();
+  // NOTE: Tensor (or TensorBase), is a pointer type that points to TensorImpl
   c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl> impl_;
 
 private:

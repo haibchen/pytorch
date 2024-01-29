@@ -39,6 +39,7 @@ namespace c10 {
 // - Version counts won't work correctly, because we do all VC tracking at the
 //   level of storages (unless you explicitly disconnect the VC with detach);
 //   mutation because data pointers are the same are totally untracked
+//  This binds the allocator and the data pointer to the memory storing the tensor's data
 struct C10_API StorageImpl : public c10::intrusive_ptr_target {
  public:
   struct use_byte_size_t {};
